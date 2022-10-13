@@ -1,9 +1,10 @@
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def plot_kde():
 
+def plot_kde():
     plt.figure(1)
     sns.kdeplot(
         data=new_df,
@@ -13,8 +14,61 @@ def plot_kde():
     )
     plt.title("Densité des arrivées au lab")
 
-def plot_hist_4():
+def plot_histo():
+    df = pd.read_csv(
+        "processed_data.csv"
+    )
+
+    df["Date"] = pd.to_datetime(df["Date"])
+
     plt.figure(2)
+    sns.histplot(
+        x="Date",
+        data=df,
+        stat=
+        "count",
+        bins=int(np.sqrt(df.shape[0]))
+    )
+    plt.xlabel("Date")
+    plt.title("Arrivées au lab pendant l'année sqrt")
+
+    plt.figure(3)
+    sns.histplot(
+        x="Date",
+        data=df,
+        stat=
+        "count",
+        bins=int(2*df.shape[0]**(1/3))
+    )
+    plt.xlabel("Date")
+    plt.title("Arrivées au lab pendant l'année 2puissance1/3")
+
+    plt.figure(4)
+    sns.histplot(
+        x="Date",
+        data=df,
+        stat=
+        "count",
+        bins=int(1 + (10/3)*np.log(df.shape[0]))
+    )
+    plt.xlabel("Date")
+    plt.title("Arrivées au lab pendant l'année log")
+
+
+    plt.figure(5)
+    sns.histplot(
+        x="Date",
+        data=df,
+        stat=
+        "count",
+        bins=500
+    )
+    plt.xlabel("Date")
+    plt.title("Arrivées au lab pendant l'année log")
+    plt.show()
+
+def plot_hist_4():
+    plt.figure(6)
     sns.histplot(
         data=new_df,
         x='MM-DD',
@@ -24,12 +78,12 @@ def plot_hist_4():
     plt.title("Histogramme des arrivées au lab (4 bins)")
 
 def plot_hist_16():
-    plt.figure(3)
+    plt.figure(7)
     sns.histplot(
         data=new_df,
         x='MM-DD',
         hue='year',
-        bins=16
+        bins=32
     )
     plt.title("Histogramme des arrivées au lab (16 bins)")
 
@@ -65,6 +119,26 @@ def plot_ridge():
     g.set(yticks=[], ylabel="")
     g.despine(bottom=True, left=True)
 
+def barplot():
+    df = sns.load_dataset("penguins")
+    sns.barplot(data=df, x="island", y="body_mass_g")
+    plt.show()
+
+def histplot_too_much_variables():
+    penguins = sns.load_dataset("penguins")
+    sns.histplot(data=penguins, x="flipper_length_mm", hue="species")
+    plt.show()
+
+def cat_plot():
+    df = sns.load_dataset("taxis")
+    g = sns.catplot(
+        data=df,
+        kind='bar',
+        x='pickup_borough',
+        y='total'
+    )
+    plt.show()
+
 if __name__ == '__main__':
     new_df = pd.read_csv("processed_data.csv")
     new_df["MM-DD"] = pd.to_datetime(new_df["MM-DD"])
@@ -73,4 +147,8 @@ if __name__ == '__main__':
     plot_hist_4()
     plot_hist_16()
     plot_ridge()
+    plot_histo()
+    barplot()
+    histplot_too_much_variables()
+    cat_plot()
     plt.show()
